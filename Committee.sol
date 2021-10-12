@@ -32,7 +32,7 @@ contract MoneySavingSystem is ERC20{
     }
     
     function reserveFee(address _newMember, uint256 _fee) internal {
-        require(_fee == tokenAmount*5);
+        require(_fee == tokenAmount*2);
         _transfer(_newMember, owner, _fee);
         securityPolicy[] = ReserveFee(_newMember, _fee);
     }
