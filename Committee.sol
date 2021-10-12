@@ -6,16 +6,24 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 
 contract MoneySavingSystem is ERC20{
     
-    address owner = msg.sender;
+    address owner;
     uint256 interval;
+    uint tokenAmount = 100;
     uint256 totalTokens;
     
     struct Member {
         address person;
+        uint256 id;
     }
     
+    struct ReserveFee {
+        address newMember;
+        uint256 fee;
+    }
+    
+    mapping(address => ReserveFee) securityPolicy;
     mapping(address => mapping(uint256 => bool)) paymentRecord;
-    mapping(address => uint256) memberCount;
+    mapping(address => Member) memberCount;
     Member[] public members;
     
     modifier onlyOwner() {
@@ -23,14 +31,22 @@ contract MoneySavingSystem is ERC20{
         _;
     }
     
-    function addMembers(address _member) public onlyOwner {
-        require(memberCount[_member] == 0); 
+    function reserveFee(address _newMember, uint256 _fee) internal {
+        require(_fee == tokenAmount*5);
+        _transfer(_newMember, owner, _fee);
+        securityPolicy[] = ReserveFee(_newMember, _fee);
+    }
+    
+    function addMembers(address _member, uint256 _reservefee) public onlyOwner {
+        require(memberCount.Member(_member) == false);
+        require(Member[5] == false);
+        reserveFee(_member, _reservefee);
         members.push(Member(_member));
         memberCount[_member]++;
     }
     
     function depositCommittee(address payable _member,address payable _owner, uint256 _tokenAmount) external payable {
-        require(_tokenAmount == 500);
+        require(_tokenAmount == tokenAmount);
         require(Member.person(_member) == true);
         require(paymentRecord[_member][_tokenAmount] == false);
         _transfer(_member,_owner,_tokenAmount);
